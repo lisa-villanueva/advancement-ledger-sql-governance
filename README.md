@@ -1,11 +1,12 @@
 🎓 School Advancement SQL Governance Ledger
+
 📌 Project Overview
 This project establishes a robust SQL-based infrastructure for managing 500k donor records and 3.8M transactions, focusing on data integrity and gift accounting standards.
 
 🏗️ Data Architecture & Infrastructure
 The foundational data for this project is a synthetic high-volume dataset designed for fundraising analytics.
-Dataset: Synthetic Donor Dataset for Fundraising Analytics
-Author: dbrown86 (via Kaggle)
+Dataset: [Synthetic Donor Dataset for Fundraising Analytics](https://www.kaggle.com/datasets/dbrown86/synthetic-donor-dataset-for-fundraising-analytics)
+Author: [dbrown86](https://www.kaggle.com/dbrown86) (via Kaggle)
 Scale: 500,000 Donor Profiles | 3.8M Transactions
 
 Usage Note: To maintain repository performance and adhere to GitHub file size limits, the raw source files (.csv, .db) are excluded from this repository.
