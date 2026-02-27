@@ -25,9 +25,22 @@ SELECT
 FROM giving;
 
 
--- 3) SPECIFIC DUPLICATION DRILL-DOWN
--- Purpose: Identifies the exact Gift_IDs that are causing density issues.
--- Outcome: Should return 0 rows if Density is 1.0.
+-- 3a) INTEGRITY STATUS CHECK
+-- Purpose: Quick pass/fail indicator for documentation/logs.
+-- Outcome: Should return 'STATUS: PASS - No Duplicate Gift_IDs' if Density is 1.0.
+
+SELECT 
+    CASE 
+        WHEN COUNT(*) = 0 THEN 'STATUS: PASS - No Duplicate Gift_IDs (N/A)'
+        ELSE 'STATUS: FAIL - Duplicates Detected (See Drill-Down Below)'
+    END AS Integrity_Result
+FROM (
+    SELECT Gift_ID FROM giving GROUP BY Gift_ID HAVING COUNT(*) > 1
+);
+
+-- 3b) SPECIFIC DUPLICATION DRILL-DOWN (Top 10)
+-- Purpose: Identifies the exact Gift_IDs causing density issues.
+-- Note: Returns 0 rows if Integrity Status is 'PASS'.
 SELECT
     Gift_ID,
     COUNT(*) AS occurrences
