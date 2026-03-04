@@ -1,12 +1,8 @@
--- donor_upgrade_propensity_gift_growth.sql
-
--- Shows donors whose giving INCREASED from FY2024 to FY2025
-
+-- donor_upgrade_propensity_detail.sql
+-- DETAIL VIEW: Individual donors with upgrade signals
+-- Shows donors whose giving INCREASED from FY2024 to FY2025 
 -- This signals "upgrade potential" for Major Gifts pipeline
 -- Proxy for upgrade potential when rating history unavailable
--- Satisfies JD Line 42 (prospect research) & Line 31 (leadership metrics)
-
-
 WITH fy2024_giving AS (
 
 SELECT
@@ -71,34 +67,20 @@ GROUP BY g.Donor_ID
 )
 
 
--- Show donors with gift growth
 
 SELECT
-
-fy24.current_rating,
-
-fy24.donor_type,
-
-COUNT(DISTINCT fy24.Donor_ID) AS donors_with_growth,
-
-ROUND(AVG(fy24.fy2024_total), 2) AS avg_fy2024_gift,
-
-ROUND(AVG(fy25.fy2025_total), 2) AS avg_fy2025_gift,
-
-ROUND(AVG(fy25.fy2025_total - fy24.fy2024_total), 2) AS avg_gift_increase,
-
-ROUND(AVG((fy25.fy2025_total - fy24.fy2024_total) * 100.0 / fy24.fy2024_total), 2) AS avg_pct_increase
-
+  fy24.Donor_ID,
+  d.Full_Name,
+  fy24.current_rating,
+  fy24.donor_type,
+  fy24.fy2024_total,
+  fy25.fy2025_total,
+  (fy25.fy2025_total - fy24.fy2024_total) AS gift_increase,
+  ROUND((fy25.fy2025_total - fy24.fy2024_total) * 100.0 / fy24.fy2024_total, 2) AS pct_increase
 FROM fy2024_giving fy24
-
-INNER JOIN fy2025_giving fy25
-
-ON fy24.Donor_ID = fy25.Donor_ID
-
-WHERE fy25.fy2025_total > fy24.fy2024_total -- Only donors whose giving GREW
-
-GROUP BY fy24.current_rating, fy24.donor_type
-
-HAVING COUNT(DISTINCT fy24.Donor_ID) >= 10 -- Filter out small samples
-
-ORDER BY fy24.current_rating, fy24.Donor_ID
+INNER JOIN fy2025_giving fy25 ON fy24.Donor_ID = fy25.Donor_ID
+JOIN donors d ON fy24.Donor_ID = d.ID
+WHERE fy25.fy2025_total > fy24.fy2024_total
+  AND (fy25.fy2025_total - fy24.fy2024_total) >= 500
+  AND ((fy25.fy2025_total - fy24.fy2024_total) * 100.0 / fy24.fy2024_total) >= 20
+ORDER BY gift_increase DESC;

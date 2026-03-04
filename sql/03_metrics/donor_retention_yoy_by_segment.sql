@@ -1,4 +1,5 @@
-### QUERY #1: Pure Donor Retention (Rating-Agnostic)
+-- file: donor_retention_yoy_by_segment.sql
+-- QUERY #1: Pure Donor Retention (Rating-Agnostic)
 
 -- Step 1: FY 2024 baseline cohort
 WITH fy2024_donors AS (
